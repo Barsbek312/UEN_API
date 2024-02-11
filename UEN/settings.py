@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-hoijn9st-5m=(g7h**rzl0!!%lrso8%)r&p9o&qmm=8mpqb+y=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = "user.User" 
 
@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "posts",
     "market",
     "event",
+    'rest_framework_swagger',    
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +64,7 @@ ROOT_URLCONF = "UEN.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR/'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
