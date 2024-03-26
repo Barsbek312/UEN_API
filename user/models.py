@@ -24,10 +24,6 @@ class Volonteer(models.Model):
         if self.uen_coins > 0:
             self.uen_coins -= value
             self.save()
-            
-
-class Seller(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seller')
 
 
 class Organization(models.Model):

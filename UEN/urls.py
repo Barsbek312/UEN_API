@@ -21,8 +21,7 @@ from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from user.views import (UserViewSet, OrganizationViewSet, 
-                        SellerViewSet, VolonteerViewSet)
+from user.views import (UserViewSet, OrganizationViewSet, VolonteerViewSet)
 from posts.views import (PostViewSet, PostLikeViewSet, FavouriteViewSet,
                          CommentViewSet, CommentLikeViewSet, CommentAnswerViewSet,
                          CommentAnswerLikeViewSet)
@@ -43,7 +42,6 @@ router = routers.DefaultRouter()
 router.register(r'user', UserViewSet)
 router.register(r'volonteer', VolonteerViewSet)
 router.register(r'orgnanization', OrganizationViewSet)
-router.register(r'seller', SellerViewSet)
 router.register(r'post', PostViewSet)
 router.register(r'post_like', PostLikeViewSet)
 router.register(r'favourite', FavouriteViewSet)

@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "djoser",
     "user",
     "posts",
-    "market",
     "event",
     'rest_framework_swagger',    
     'drf_yasg',

@@ -2,11 +2,13 @@ from rest_framework import permissions
 from rest_framework import viewsets
 from posts.models import (Post, PostLike, Comment, Favourite, 
                           CommentAnswer, CommentLike, CommentAnswerLike)
+
 from posts.serializers import (CommentAnswerLikeSerializer, PostLikeSerializer, 
                                FavouriteSerializer, CommentLikeSerializer, 
                                CommentAnswerSerializer, CommentSerializer, 
                                PostSerializer) 
-from posts.permissions import IsVolonteer, IsSeller, IsOrganization
+
+from posts.permissions import IsVolonteer, IsOrganization
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -23,7 +25,8 @@ class PostLikeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def perform_create(self, serializer):
-        instance = self.get_object()
+        print(self)
+        instance = serializer.save()
         instance.post.increase()
         
     def destroy(self, request, *args, **kwargs):
@@ -51,7 +54,7 @@ class CommentLikeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def perform_create(self, serializer):
-        instance = self.get_object()
+        instance = serializer.save()
         instance.post.increase()
         
     def destroy(self, request, *args, **kwargs):
@@ -73,7 +76,7 @@ class CommentAnswerLikeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def perform_create(self, serializer):
-        instance = self.get_object()
+        instance = serializer.save()
         instance.post.increase()
         
     def destroy(self, request, *args, **kwargs):
