@@ -1,0 +1,8 @@
+Hello {{ username }},
+
+Your account has been created. Here are your login credentials:
+
+Username: {{ username }}
+Password: {{ password }}
+
+Thank you!

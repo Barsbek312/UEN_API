@@ -38,7 +38,10 @@ class CommentAnswerSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_liked_by_user(self, obj):
         user = self.context['request'].user
-        return CommentAnswerLike.objects.filter(user=user).exists()
+        try:
+            return CommentAnswerLike.objects.filter(user=user).exists()
+        except:
+            return False
 
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
@@ -54,7 +57,10 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_liked_by_user(self, obj):
         user = self.context['request'].user
-        return CommentLike.objects.filter(user=user).exists()
+        try:
+            return CommentLike.objects.filter(user=user).exists()
+        except:
+            return False
 
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,11 +78,17 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_liked_by_user(self, obj):
         user = self.context['request'].user
-        return PostLike.objects.filter(user=user).exists()
+        try:
+            return PostLike.objects.filter(user=user).exists()
+        except:
+            return False
 
     def get_is_favourite(self, obj):
         user = self.context['request'].user
-        return Favourite.objects.filter(user=user).exists()
+        try:
+            return Favourite.objects.filter(user=user).exists()
+        except:
+            return False
     
     def get_organization_name(self, obj):
-        return obj.organization.name
+        return obj.organization.user.username

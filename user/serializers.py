@@ -1,7 +1,20 @@
 from rest_framework import serializers
-from user.models import User, Volonteer, Organization
+from user.models import User, Volonteer, Organization, Moderator, Application
 from djoser.serializers import UserCreateSerializer
 from posts.serializers import PostSerializer
+
+
+class ApplicationSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['url', 'id', 'name', 'city', 'address', 
+                  'postal_code', 'phonenumber', 'email',
+                  'accepted']
+
+class ModeratorSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Moderator
+        fields = ['url', 'id', 'user']
 
 
 class VolonteerSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,7 +34,9 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Organization
-        fields = ['url', 'id', 'name', 'user', 'user_name', 'posts']
+        fields = ['url', 'id', 'city', 'address', 
+                  'postal_code', 'phonenumber', 'email', 
+                  'user', 'user_name', 'posts']
             
     def get_user_name(self, obj):
         return obj.user.username
@@ -33,7 +48,7 @@ class UserRegistrationSerializer(UserCreateSerializer):
     
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ['url', 'id', 'username', 'first_name', 'middle_name', 'last_name', 'email', 'password','is_active',
+        fields = ['url', 'pk', 'username', 'first_name', 'middle_name', 'last_name', 'email', 'password','is_active',
                   'volonteer', 'organization']
 
 
@@ -43,5 +58,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = User
-        fields = ['url', 'id', 'username', 'first_name', 'middle_name', 'last_name', 'email', 'password','is_active',
+        fields = ['url', 'pk', 'username', 'first_name', 'middle_name', 'last_name', 'email', 'password','is_active',
                   'volonteer', 'organization']

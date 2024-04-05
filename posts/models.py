@@ -67,3 +67,8 @@ class CommentLike(models.Model):
 class CommentAnswerLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_answer_like')
     comment_answer = models.ForeignKey(CommentAnswer, on_delete=models.CASCADE, related_name='comment_answer_like')
+    
+
+class PostImage(models.Model):
+    image = models.ImageField(upload_to='post_image/')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_image')

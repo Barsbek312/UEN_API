@@ -21,7 +21,7 @@ from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from user.views import (UserViewSet, OrganizationViewSet, VolonteerViewSet)
+from user.views import (UserViewSet, OrganizationViewSet, VolonteerViewSet, ModeratorViewSet, ApplicationViewSet)
 from posts.views import (PostViewSet, PostLikeViewSet, FavouriteViewSet,
                          CommentViewSet, CommentLikeViewSet, CommentAnswerViewSet,
                          CommentAnswerLikeViewSet)
@@ -49,6 +49,8 @@ router.register(r'comment', CommentViewSet)
 router.register(r'comment_like', CommentLikeViewSet)
 router.register(r'comment_answer', CommentAnswerViewSet)
 router.register(r'comment_answer_like', CommentAnswerLikeViewSet)
+router.register(r'moderator', ModeratorViewSet)
+router.register(r'application', ApplicationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -58,7 +60,7 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^ko(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/documentation/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
