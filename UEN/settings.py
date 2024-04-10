@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Изменения Барсбека
 CORS_ALLOWED_ORIGINS = [
