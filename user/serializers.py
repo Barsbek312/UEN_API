@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from user.models import User, Volonteer, Organization, Moderator, Application
+from user.models import User, Volonteer, Organization, Moderator, Application, Redactor
 from djoser.serializers import UserCreateSerializer
 from posts.serializers import PostSerializer
 
@@ -22,11 +22,21 @@ class VolonteerSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = Volonteer
-        fields = ['url', 'id', 'user', 'uen_coins', 'user_name']
+        fields = ['url', 'id', 'user', 'user_name', 'description', 'instagram',
+            'facebook', 'youtube', 'telegram']
         
     def get_user_name(self, obj):
         return obj.user.username
       
+
+class RedactorSerializer(serializers.HyperlinkedModelSerializer):
+    user_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Redactor      
+        fields = ['url', 'id', 'user', 'user_name', 'description','instagram',
+            'facebook', 'youtube', 'telegram']
+
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     user_name = serializers.SerializerMethodField()
@@ -35,8 +45,9 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Organization
         fields = ['url', 'id', 'city', 'address', 
-                  'postal_code', 'phonenumber', 'email', 
-                  'user', 'user_name', 'posts']
+                  'postal_code', 'phonenumber', 'email','instagram',
+                  'facebook', 'youtube', 'telegram', 'user', 
+                  'user_name', 'posts']
             
     def get_user_name(self, obj):
         return obj.user.username
@@ -55,8 +66,13 @@ class UserRegistrationSerializer(UserCreateSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     volonteer = VolonteerSerializer(read_only=True)
     organization = OrganizationSerializer(read_only=True)
+    redactor = RedactorSerializer(read_only=True)
+    is_admin = serializers.SerializerMethodField()
     
     class Meta:
         model = User
         fields = ['url', 'pk', 'username', 'first_name', 'middle_name', 'last_name', 'email', 'password','is_active',
-                  'volonteer', 'organization']
+                  'volonteer', 'organization', 'redactor', 'is_admin']
+        
+    def get_is_admin(self, obj):
+        return obj.user.is_staff

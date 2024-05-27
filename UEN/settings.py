@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "djoser",
     "user",
     "posts",
+    "corsheaders",
     "event",
     'rest_framework_swagger',    
     'drf_yasg',
@@ -60,6 +61,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "UEN.urls"
@@ -112,6 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DOMAIN = 'localhost:3000'
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '/password/reset/confirm/{uid}/{token}',
