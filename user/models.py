@@ -5,11 +5,12 @@ import string
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+
 class User(AbstractUser):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    birthday = models.DateField()
-    phone_number = models.CharField(max_length=100)
+    birthday = models.DateField(default=None, null=True)
+    phone_number = models.CharField(max_length=100, default=None, null=True)
     
     
     def __str__(self):
@@ -18,16 +19,63 @@ class User(AbstractUser):
 
 class Volonteer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='volonteer')
-    passport_photo = models.ImageField(upload_to='volonteers_passport/')
+    passport_photo = models.ImageField(upload_to='volonteers_passport/', default=None, null=True)
+    volonteer_type = models.CharField(max_length=300, default=None, null=True)
+    photo = models.ImageField(upload_to='volonteers/', default=None, null=True)
+    city = models.CharField(max_length=100, default=None, null=True)
+    country = models.CharField(max_length=100, default=None, null=True)
+    description = models.TextField(default=None, null=True)
+    instagram = models.CharField(max_length=400, null=True, default=None)
+    facebook = models.CharField(max_length=400, null=True, default=None)
+    youtube = models.CharField(max_length=400, null=True, default=None)
+    telegram = models.CharField(max_length=400, null=True, default=None)
+
+
+class ApplicationVolonteer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_application_vol')
+    passport_photo = models.ImageField(upload_to='redactors_passport/')
     volonteer_type = models.CharField(max_length=300)
-    photo = models.ImageField(upload_to='volonteers/')
-    city = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
+    city = models.CharField(max_length=500)
+    country = models.CharField(max_length=400)
+    photo = models.ImageField(upload_to='redactors/')
     description = models.TextField()
     instagram = models.CharField(max_length=400, null=True, default=None)
     facebook = models.CharField(max_length=400, null=True, default=None)
     youtube = models.CharField(max_length=400, null=True, default=None)
     telegram = models.CharField(max_length=400, null=True, default=None)
+    accepted = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return self.name
+    
+    def save(self, *args, **kwargs):
+
+        if self.accepted:
+                
+            volonteer = Volonteer.objects.create(
+                user=self.user,
+                passport_photo = self.passport_photo,
+                city = self.city, 
+                country = self.country,
+                photo = self.photo,
+                description = self.description,
+                instagram = self.instagram,
+                facebook = self.facebook,
+                youtube = self.youtube,
+                telegram = self.telegram
+            )
+
+        if self.accepted:
+            subject = 'You have become a volonteer'
+            message = render_to_string('email_template.txt', {
+                'username': self.user,
+            })
+
+            from_email = 'your@example.com'
+            to_email = [self.user.email]
+            send_mail(subject, message, from_email, to_email)
+
+        super().save(*args, **kwargs)
 
 
 class Organization(models.Model):
@@ -72,6 +120,7 @@ class Redactor(models.Model):
 
 
 class ApplicationRedactor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_application_red')
     passport_photo = models.ImageField(upload_to='redactors_passport/')
     application_statement = models.TextField()
     city = models.CharField(max_length=500)
@@ -88,40 +137,35 @@ class ApplicationRedactor(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        password = None
 
         if self.accepted:
-            password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
-
-            
-            user = User.objects.create_user(
-                username=self.name,
-                email=self.email,
-                password=password
-            )
-            
                 
-            Organization.objects.create(
-                user=user,
-                city=self.city,
-                address=self.address,
-                postal_code=self.postal_code,
-                phonenumber=self.phonenumber,
-                email=self.email
+            redactor = Redactor.objects.create(
+                user=self.user,
+                passport_photo = self.passport_photo,
+                application_statement = self.application_statement,
+                city = self.city, 
+                country = self.country,
+                photo = self.photo,
+                description = self.description,
+                instagram = self.instagram,
+                facebook = self.facebook,
+                youtube = self.youtube,
+                telegram = self.telegram
             )
 
-        if password:
-            subject = 'Your Account Information'
+        if self.accepted:
+            subject = 'You have become a redactor'
             message = render_to_string('email_template.txt', {
-                'username': self.name,
-                'password': password,
+                'username': self.user,
             })
 
             from_email = 'your@example.com'
-            to_email = [self.email]
+            to_email = [self.user.email]
             send_mail(subject, message, from_email, to_email)
 
         super().save(*args, **kwargs)
+
 
 class ApplicationOrganization(models.Model):
     name = models.CharField(max_length=100)
@@ -162,26 +206,30 @@ class ApplicationOrganization(models.Model):
             )
             
                 
-            Organization.objects.create(
+            organization = Organization.objects.create(
                 user=user,
                 city=self.city,
                 address=self.address,
                 postal_code=self.postal_code,
             )
+            
+        super().save(*args, **kwargs)
 
-        if password:
+        if user and organization:
+            for doc in self.app_registration_documents.all():
+                doc.organization = organization
+                doc.save()
+
             subject = 'Your Account Information'
             message = render_to_string('email_template.txt', {
                 'username': self.name,
                 'password': password,
             })
-
             from_email = 'your@example.com'
             to_email = [self.email]
             send_mail(subject, message, from_email, to_email)
 
-        super().save(*args, **kwargs)
-        
+
 
 class RegistrationDocuments(models.Model):
     application = models.ForeignKey(ApplicationOrganization, on_delete=models.CASCADE, related_name='app_registration_documents')

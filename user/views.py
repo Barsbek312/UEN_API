@@ -1,21 +1,76 @@
 from rest_framework import viewsets
 from user.serializers import (UserSerializer, VolonteerSerializer, 
-                              OrganizationSerializer, ApplicationSerializer,
-                              ModeratorSerializer)
-from user.models import User, Volonteer, Organization, Application, Moderator
+                              OrganizationSerializer,
+                              ModeratorSerializer, ApplicationOrganizationSerializer,
+                              FavouriteOrganizationSerializer, RegistrationDocumentsSerializer,
+                              FavouriteVolonteerSerializer, ApplicationRedactorSerializer,
+                              ApplicationVolonteerSerializer, RedactorSerializer)
+from user.models import (User, Volonteer, Organization, Moderator, ApplicationOrganization,
+                         FavouriteOrganization, RegistrationDocuments, FavouriteVolonteer,
+                         ApplicationRedactor, ApplicationVolonteer, Redactor)
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from user.permissions import IsModerator
 
 
-class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
-    serializer_class = ApplicationSerializer
+class RegistrationDocumentsViewSet(viewsets.ModelViewSet):
+    queryset = RegistrationDocuments.objects.all()
+    serializer_class = RegistrationDocumentsSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class RedactorViewSet(viewsets.ModelViewSet):
+    queryset = Redactor.objects.all()
+    serializer_class = RedactorSerializer
+    permission_classes = [permissions.AllowAny|IsModerator]
+
+
+class FavouriteOrganizationViewSet(viewsets.ModelViewSet):
+    queryset = FavouriteOrganization.objects.all()
+    serializer_class = FavouriteOrganizationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class FavouriteVolonteerViewSet(viewsets.ModelViewSet):
+    queryset = FavouriteVolonteer.objects.all()
+    serializer_class = FavouriteVolonteerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ApplicationVolonteerViewSet(viewsets.ModelViewSet):
+    queryset = ApplicationVolonteer.objects.all()
+    serializer_class = ApplicationVolonteerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['delete', 'update', 'list']:
+            return [IsModerator() or permissions.IsAdminUser()]
+        elif self.action in ['list', 'create',]:
+            return [permissions.IsAuthenticated()]
+        return super().get_permissions()
+
+
+class ApplicationRedactorViewSet(viewsets.ModelViewSet):
+    queryset = ApplicationRedactor.objects.all()
+    serializer_class = ApplicationRedactorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['delete', 'update', 'list']:
+            return [IsModerator() or permissions.IsAdminUser()]
+        elif self.action in ['list', 'create',]:
+            return [permissions.IsAuthenticated()]
+        return super().get_permissions()
+
+
+class ApplicationOrganizationViewSet(viewsets.ModelViewSet):
+    queryset = ApplicationOrganization.objects.all()
+    serializer_class = ApplicationOrganizationSerializer
     permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
-        if self.action in ['delete', 'update']:
+        if self.action in ['delete', 'update', 'list']:
             return [IsModerator() or permissions.IsAdminUser()]
         elif self.action in ['list', 'create',]:
             return [permissions.AllowAny()]
@@ -32,24 +87,6 @@ class VolonteerViewSet(viewsets.ModelViewSet):
     queryset = Volonteer.objects.all()
     serializer_class = VolonteerSerializer
     permission_classes = [permissions.AllowAny|IsModerator]
-    
-    def create(self, request):
-        serializer = VolonteerSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
-
-            try:
-                user = User.objects.get(username=user)
-            except User.DoesNotExist:
-                return Response({'message': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
-                        
-            if Organization.objects.filter(user=user).exists():
-                return Response({'message': 'This user is organization'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            serializer.save()
-            return Response({'message': 'Volonteer added successfully'}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
 class OrganizationViewSet(viewsets.ModelViewSet):

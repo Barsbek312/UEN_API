@@ -1,0 +1,7 @@
+Hello {{ username }},
+
+You have become a redactor:
+
+Username: {{ username }}
+
+Thank you!

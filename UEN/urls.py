@@ -21,7 +21,10 @@ from rest_framework import routers
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
-from user.views import (UserViewSet, OrganizationViewSet, VolonteerViewSet, ModeratorViewSet, ApplicationViewSet)
+from user.views import (UserViewSet, OrganizationViewSet, VolonteerViewSet, ModeratorViewSet,
+                        RegistrationDocumentsViewSet, RedactorViewSet, FavouriteOrganizationViewSet,
+                        FavouriteVolonteerViewSet, ApplicationVolonteerViewSet, ApplicationRedactorViewSet,
+                        ApplicationOrganizationViewSet)
 from posts.views import (PostViewSet, PostLikeViewSet, FavouriteViewSet,
                          CommentViewSet, CommentLikeViewSet, CommentAnswerViewSet,
                          CommentAnswerLikeViewSet)
@@ -50,7 +53,13 @@ router.register(r'comment_like', CommentLikeViewSet)
 router.register(r'comment_answer', CommentAnswerViewSet)
 router.register(r'comment_answer_like', CommentAnswerLikeViewSet)
 router.register(r'moderator', ModeratorViewSet)
-router.register(r'application', ApplicationViewSet)
+router.register(r'application_organization', ApplicationOrganizationViewSet)
+router.register(r'application_volonteer', ApplicationVolonteerViewSet)
+router.register(r'application_redactor', ApplicationRedactorViewSet)
+router.register(r'redactor', RedactorViewSet)
+router.register(r'favourite_organization', FavouriteOrganizationViewSet)
+router.register(r'favourite_volonteer', FavouriteVolonteerViewSet)
+router.register(r'registration_documents', RegistrationDocumentsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,0 +1,7 @@
+Hello {{ username }},
+
+You have become a volonteer:
+
+Username: {{ username }}
+
+Thank you!
