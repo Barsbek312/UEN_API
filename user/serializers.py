@@ -66,7 +66,7 @@ class VolonteerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Volonteer
         fields = ['url', 'id', 'user', 'user_name', 'description', 'instagram',
-            'facebook', 'youtube', 'telegram']
+            'facebook', 'youtube', 'telegram', 'photo']
         
     def get_user_name(self, obj):
         return obj.user.username
@@ -78,7 +78,11 @@ class RedactorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Redactor      
         fields = ['url', 'id', 'user', 'user_name', 'description','instagram',
-            'facebook', 'youtube', 'telegram']
+            'facebook', 'youtube', 'telegram', 'photo']
+        
+    def get_user_name(self, obj):
+        return obj.user.username
+    
 
 
 class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
@@ -88,9 +92,9 @@ class OrganizationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Organization
         fields = ['url', 'id', 'city', 'address', 
-                  'postal_code', 'phonenumber', 'email','instagram',
+                  'postal_code','instagram',
                   'facebook', 'youtube', 'telegram', 'user', 
-                  'user_name', 'posts']
+                  'user_name', 'posts', 'logo']
             
     def get_user_name(self, obj):
         return obj.user.username
@@ -106,8 +110,8 @@ class UserRegistrationSerializer(UserCreateSerializer):
     
     class Meta:
         model = User
-        fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active',
-                  'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 'favourite_volonteer']
+        fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active', 'birthday',
+                  'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 'favourite_volonteer', 'phone_number']
         
     def get_is_admin(self, obj):
         return obj.is_staff  
@@ -123,9 +127,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     
     class Meta:
         model = User
-        fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active',
+        fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active','birthday',
                   'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 
-                  'favourite_volonteer']
+                  'favourite_volonteer', 'phone_number']
         
     def get_is_admin(self, obj):
         return obj.is_staff  

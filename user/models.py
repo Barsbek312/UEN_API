@@ -87,6 +87,7 @@ class Organization(models.Model):
     facebook = models.CharField(max_length=400, null=True, default=None)
     youtube = models.CharField(max_length=400, null=True, default=None)
     telegram = models.CharField(max_length=400, null=True, default=None)
+    logo = models.ImageField(blank=True, null=True, upload_to='logo_org/', default=None)
     image1 = models.ImageField(blank=True, null=True, upload_to='organizations/')
     image2 = models.ImageField(blank=True, null=True, upload_to='organizations/')
     image3 = models.ImageField(blank=True, null=True, upload_to='organizations/')
@@ -211,6 +212,11 @@ class ApplicationOrganization(models.Model):
                 city=self.city,
                 address=self.address,
                 postal_code=self.postal_code,
+                instagram=self.instagram,
+                facebook=self.facebook,
+                youtube=self.youtube,
+                telegram=self.telegram,
+                logo=self.logo
             )
             
         super().save(*args, **kwargs)

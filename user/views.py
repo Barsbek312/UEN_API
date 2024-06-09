@@ -41,26 +41,26 @@ class FavouriteVolonteerViewSet(viewsets.ModelViewSet):
 class ApplicationVolonteerViewSet(viewsets.ModelViewSet):
     queryset = ApplicationVolonteer.objects.all()
     serializer_class = ApplicationVolonteerSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
-        if self.action in ['delete', 'update', 'list']:
+        if self.action in ['delete', 'update']:
             return [IsModerator() or permissions.IsAdminUser()]
         elif self.action in ['list', 'create',]:
-            return [permissions.IsAuthenticated()]
+            return [permissions.AllowAny()]
         return super().get_permissions()
 
 
 class ApplicationRedactorViewSet(viewsets.ModelViewSet):
     queryset = ApplicationRedactor.objects.all()
     serializer_class = ApplicationRedactorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
-        if self.action in ['delete', 'update', 'list']:
+        if self.action in ['delete', 'update']:
             return [IsModerator() or permissions.IsAdminUser()]
         elif self.action in ['list', 'create',]:
-            return [permissions.IsAuthenticated()]
+            return [permissions.AllowAny()]
         return super().get_permissions()
 
 
@@ -70,7 +70,7 @@ class ApplicationOrganizationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
-        if self.action in ['delete', 'update', 'list']:
+        if self.action in ['delete', 'update']:
             return [IsModerator() or permissions.IsAdminUser()]
         elif self.action in ['list', 'create',]:
             return [permissions.AllowAny()]

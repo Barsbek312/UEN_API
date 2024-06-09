@@ -8,7 +8,7 @@ from posts.serializers import (CommentAnswerLikeSerializer, PostLikeSerializer,
                                CommentAnswerSerializer, CommentSerializer, 
                                PostSerializer) 
 
-from posts.permissions import IsVolonteer, IsOrganization, IsModerator
+from posts.permissions import IsVolonteer, IsOrganization, IsModerator, IsRedactor
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -16,13 +16,21 @@ from rest_framework import status
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsOrganization|IsModerator]
+    permission_classes = [permissions.AllowAny]
+
+    # def get_permissions(self):
+    #     if self.action in ['list']:
+    #         return [permissions.AllowAny()]
+    #     elif self.action in ['delete', 'update', 'create']:
+    #         return [IsModerator or permissions.IsAdminUser or IsRedactor or IsOrganization]
+    #     return super().get_permissions()
+
     
 
 class PostLikeViewSet(viewsets.ModelViewSet):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
-    permission_classes = [permissions.IsAuthenticated|IsModerator]
+    permission_classes = [permissions.IsAuthenticated]
     
     def perform_create(self, serializer):
         print(self)
@@ -34,6 +42,14 @@ class PostLikeViewSet(viewsets.ModelViewSet):
         instance.post.decrease()
         self.perform_destroy(instance)
         return Response({ "message" : "Deleted successfully" }, status=status.HTTP_204_NO_CONTENT)
+    
+    def get_permissions(self):
+        if self.action in ['list']:
+            return [permissions.AllowAny()]
+        elif self.action in ['delete', 'update', 'create', 'list']:
+            return [IsModerator() or permissions.IsAdminUser() or IsRedactor() or IsOrganization()]
+        return super().get_permissions()
+
     
 
 class FavouriteViewSet(viewsets.ModelViewSet):

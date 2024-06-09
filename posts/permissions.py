@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from user.models import Volonteer, User, Organization, Moderator
+from user.models import Volonteer, User, Organization, Moderator, Redactor
 
 class IsVolonteer(BasePermission):
     
@@ -19,4 +19,11 @@ class IsModerator(BasePermission):
     
     def has_permission(self, request, view):
         return ((Moderator.objects.filter(user=request.user).exists() and bool(request.user and request.user.is_authenticated))
+                or request.user.is_staff)
+    
+
+class IsRedactor(BasePermission):
+    
+    def has_permission(self, request, view):
+        return ((Redactor.objects.filter(user=request.user).exists() and bool(request.user and request.user.is_authenticated))
                 or request.user.is_staff)

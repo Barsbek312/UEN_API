@@ -68,13 +68,19 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     liked_by_user = serializers.SerializerMethodField()
     is_favourite = serializers.SerializerMethodField()
-    organization_name = serializers.SerializerMethodField()
+    redactor_name = serializers.SerializerMethodField()
+    redactor_url = serializers.SerializerMethodField()
+    redactor_telegram = serializers.SerializerMethodField()
+    redactor_youtube = serializers.SerializerMethodField()
+    redactor_instagram = serializers.SerializerMethodField()
+    redactor_facebook = serializers.SerializerMethodField()
+
     
     class Meta:
         model = Post
         fields = ['url', 'id', 'text', 'date', 'number_of_likes', 
-                  'liked_by_user', 'is_favourite', 'organization_name',
-                  'organization', 'post_likes', 'comments']
+                  'liked_by_user', 'is_favourite', 'redactor_name',
+                  'redactor_url', 'redactor_youtube', 'redactor_instagram', 'redactor_facebook', 'redactor_telegram','redactor', 'post_likes', 'comments']
 
     def get_liked_by_user(self, obj):
         user = self.context['request'].user
@@ -90,5 +96,21 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
         except:
             return False
     
-    def get_organization_name(self, obj):
-        return obj.organization.user.username
+    def get_redactor_name(self, obj):
+        return obj.redactor.user.username
+    
+    def get_redactor_url(self, obj):
+        redactor_id = obj.redactor.id
+        return f"http://127.0.0.1:8000/redactor/{redactor_id}"
+    
+    def get_redactor_instagram(self, obj):
+        return obj.redactor.instagram
+    
+    def get_redactor_telegram(self, obj):
+        return obj.redactor.telegram
+    
+    def get_redactor_youtube(self, obj):
+        return obj.redactor.youtube
+    
+    def get_redactor_facebook(self, obj):
+        return obj.redactor.facebook

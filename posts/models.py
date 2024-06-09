@@ -1,12 +1,12 @@
 from django.db import models
-from user.models import User, Organization
+from user.models import User, Organization, Redactor
 
 
 class Post(models.Model):
     text = models.TextField()
     date = models.DateField()
     number_of_likes = models.IntegerField(default=0)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="posts")
+    redactor = models.ForeignKey(Redactor, on_delete=models.CASCADE, related_name="posts", null=True)
 
     def increase(self):
         self.number_of_likes += 1
