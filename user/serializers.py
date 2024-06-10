@@ -104,6 +104,7 @@ class UserRegistrationSerializer(UserCreateSerializer):
     volonteer = VolonteerSerializer(read_only=True)
     organization = OrganizationSerializer(read_only=True)
     redactor = RedactorSerializer(read_only=True)
+    moderator = ModeratorSerializer(read_only=True)
     is_admin = serializers.SerializerMethodField()
     favourite_organizations = FavouriteOrganizationSerializer(many=True, read_only=True)
     favourite_volonteer = FavouriteVolonteerSerializer(many=True, read_only=True)
@@ -111,7 +112,7 @@ class UserRegistrationSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active', 'birthday',
-                  'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 'favourite_volonteer', 'phone_number']
+                  'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 'favourite_volonteer', 'phone_number', 'moderator']
         
     def get_is_admin(self, obj):
         return obj.is_staff  
@@ -121,6 +122,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     volonteer = VolonteerSerializer(read_only=True)
     organization = OrganizationSerializer(read_only=True)
     redactor = RedactorSerializer(read_only=True)
+    moderator = ModeratorSerializer(read_only=True)
     is_admin = serializers.SerializerMethodField()
     favourite_organizations = FavouriteOrganizationSerializer(many=True, read_only=True)
     favourite_volonteer = FavouriteVolonteerSerializer(many=True, read_only=True)
@@ -129,7 +131,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['url', 'pk', 'username', 'first_name', 'last_name', 'email', 'password','is_active','birthday',
                   'volonteer', 'organization', 'redactor', 'is_admin', 'favourite_organizations', 
-                  'favourite_volonteer', 'phone_number']
+                  'favourite_volonteer', 'phone_number', 'moderator']
         
     def get_is_admin(self, obj):
         return obj.is_staff  
